@@ -1,4 +1,4 @@
-import os
+imenimport os
 import streamlit as st
 from streamlit_option_menu import option_menu
 from PyPDF2 import PdfReader
@@ -93,7 +93,7 @@ def user_input(user_question, api_key):
 #Streamlit UI
 
 def main():
-    st.header("AI clone chatbot💁")
+    st.header("AI Experiments💁")
 
     user_question = st.text_input("Ask a Question from the PDF Files", key="user_question")
  
