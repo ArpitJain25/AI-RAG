@@ -80,7 +80,7 @@ def get_conversational_chain(vector_store):
 
   
 def user_input(user_question, GOOGLE_API_KEY):
-  embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
+  embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=GOOGLE_API_KEY)
   new_db = FAISS.load_local("faiss_index", embeddings)
   docs = new_db.similarity_search(user_question)
   chain = get_conversational_chain()
