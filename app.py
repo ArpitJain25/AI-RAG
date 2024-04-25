@@ -72,7 +72,7 @@ def get_conversational_chain(vector_store):
   QA_CHAIN_PROMPT = PromptTemplate.from_template(template)# Run chain
   qa_chain = RetrievalQA.from_chain_type(
       llm=model,
-      retriever=vectorstore.as_retriever(),
+      retriever=vector_store,
       return_source_documents=True,
       chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
   )
