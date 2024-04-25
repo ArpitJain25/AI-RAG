@@ -35,6 +35,9 @@ with st.sidebar:
                            icons=['activity', 'heart', 'person'],
                            default_index=0)
 
+# This is the first API key input; no need to repeat it in the main function.
+GOOGLE_API_KEY = st.text_input("Enter your Google API Key:", type="password", key="api_key_input")
+
 # Processing Logic
 # PDF load and Split
 def get_pdf_text(pdf_docs):
