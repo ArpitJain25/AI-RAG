@@ -1,4 +1,4 @@
-imenimport os
+import os
 import streamlit as st
 from streamlit_option_menu import option_menu
 from PyPDF2 import PdfReader
