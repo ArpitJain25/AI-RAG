@@ -19,15 +19,11 @@ st.set_page_config(page_title="RAG Application by APJ",
                    layout="wide",
                    page_icon="🧑‍⚕️")
 
-from IPython.display import display
-from IPython.display import Markdown
-import textwrap
+
 
 api_key = st.text_input("Enter your Google API Key:", type="password", key="api_key_input")
 
-def to_markdown(text):
-  text = text.replace('•', '  *')
-  return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
+
 
 # sidebar for navigation
 with st.sidebar:
