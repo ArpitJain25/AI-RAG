@@ -5,6 +5,7 @@ from streamlit_option_menu import option_menu
 import google.generativeai as genai
 #from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.vectorstores import Chroma
+from langchain.vectorstores import FAISS
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain.chains import RetrievalQA
@@ -47,7 +48,7 @@ def get_pdf_text(pdf_docs):
   return pdfpages
 
 # Text Splitter
-def get_text_chunks(text):
+def get_text_chunks(pdfpages):
   text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
   context = "\n\n".join(str(p.page_content) for p in pdfpages)
   texts = text_splitter.split_text(context)
@@ -55,11 +56,12 @@ def get_text_chunks(text):
 
 def get_vector_store(text_chunks, GOOGLE_API_KEY):
   embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=GOOGLE_API_KEY)
-  vector_store = Chroma.from_texts(texts, embeddings,persist_directory = persist_directory).as_retriever(search_kwargs={"k":5})
-  client = chromadb.PersistentClient(path="/path/to/save/to")
+  vector_store = FAISS.from_texts(texts=text_chunks, embedding=embeddings).as_retriever(search_kwargs={"k":5})
+  vector_store.save_local("faiss_index")
 
 
-def get_conversational_chain():
+
+def get_conversational_chain(vector_store):
   model = ChatGoogleGenerativeAI(model="gemini-pro",google_api_key=GOOGLE_API_KEY,
                              temperature=0.5)
 
@@ -86,6 +88,8 @@ def user_input(user_question, GOOGLE_API_KEY):
   Markdown(result["result"])
   st.write("Reply: ", result["output_text"])
 
+#Streamlit UI
+
 def main():
     st.header("AI clone chatbot💁")
 
@@ -100,9 +104,9 @@ def main():
         pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True, key="pdf_uploader")
         if st.button("Submit & Process", key="process_button") and GOOGLE_API_KEY:  # Check if API key is provided before processing
             with st.spinner("Processing..."):
-                raw_text = get_pdf_text(pdf_docs)
-                text_chunks = get_text_chunks(raw_text)
-                get_vector_store(text_chunks, GOOGLE_API_KEY)
+                text = get_pdf_text(pdf_docs)
+                texts = get_text_chunks(pdfpages)
+                get_vector_store(texts, GOOGLE_API_KEY)
                 st.success("Done")
 
 if __name__ == "__main__":
