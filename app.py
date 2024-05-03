@@ -14,26 +14,6 @@ from langchain import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains.question_answering import load_qa_chain
 
-# Set page configuration
-st.set_page_config(page_title="RAG Application by APJ",
-                   layout="wide",
-                   page_icon="🧑‍⚕️")
-
-
-
-api_key = st.text_input("Enter your Google API Key:", type="password", key="api_key_input")
-
-
-
-# sidebar for navigation
-with st.sidebar:
-      selected = option_menu('Menu',
-                           ['About Me',
-                            'BJP Manifesto'],
-                           menu_icon='rocket',
-                           icons=['activity', 'heart', 'person'],
-                           default_index=0)
-
 # This is the first API key input; no need to repeat it in the main function.
 
 # Processing Logic
@@ -87,26 +67,46 @@ def user_input(user_question, api_key):
     st.write("Reply: ", response["output_text"])
 
 #Streamlit UI
+st.set_page_config(page_title="RAG Application by APJ",
+                   layout="wide",
+                   page_icon="🧑‍⚕️")
+
+st.header("AI Experiments by APJ💁")
+st.subheader("RAG Application")
+    
+# Step 1: API Key from User
+api_key = st.text_input("Step 1: Enter your Google API Key:", type="password", key="api_key_input")
+
 
 def main():
-    st.header("AI Experiments💁")
-
-    user_question = st.text_input("Ask a Question from the PDF Files", key="user_question")
+    
+    
+    # Step 2: Upload Reference Document
+    pdf_docs = st.file_uploader("Step 2: Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True, key="pdf_uploader")
+    if st.button("Load Document", key="process_button") and api_key:  # Check if API key is provided before processing
+            with st.spinner("Processing..."):
+                raw_text = get_pdf_text(pdf_docs)
+                text_chunks = get_text_chunks(raw_text)
+                get_vector_store(text_chunks, api_key)
+                st.success("Done")
+    
+    # Step 3: Take user question
+    user_question = st.text_input("Step 3: Enter your question and Hit Enter", key="user_question")
  
 
     if user_question and api_key:  # Ensure API key and user question are provided
         user_input(user_question, api_key)
 
   
-    with st.sidebar:
-        st.title("Menu:")
-        pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True, key="pdf_uploader")
-        if st.button("Submit & Process", key="process_button") and api_key:  # Check if API key is provided before processing
-            with st.spinner("Processing..."):
-                raw_text = get_pdf_text(pdf_docs)
-                text_chunks = get_text_chunks(raw_text)
-                get_vector_store(text_chunks, api_key)
-                st.success("Done")
+    #with st.sidebar:
+    #   st.title("Step 1")
+    #    pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True, key="pdf_uploader")
+    #    if st.button("Submit & Process", key="process_button") and api_key:  # Check if API key is provided before processing
+    #        with st.spinner("Processing..."):
+    #            raw_text = get_pdf_text(pdf_docs)
+    #            text_chunks = get_text_chunks(raw_text)
+    #            get_vector_store(text_chunks, api_key)
+    #            st.success("Done")
 # pdfpages = get_pdf_text(pdf_docs)
   #              texts = get_text_chunks(pdfpages)
    #             get_vector_store(texts, GOOGLE_API_KEY)
