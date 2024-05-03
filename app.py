@@ -100,7 +100,7 @@ def main():
   
     #with st.sidebar:
     #   st.title("Step 1")
-    #    pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True, key="pdf_uploader")
+    #    pdf_docs = st.file_uploader("Upload your PDF Files and Click on Load Button", accept_multiple_files=True, key="pdf_uploader")
     #    if st.button("Submit & Process", key="process_button") and api_key:  # Check if API key is provided before processing
     #        with st.spinner("Processing..."):
     #            raw_text = get_pdf_text(pdf_docs)
